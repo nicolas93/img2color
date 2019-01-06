@@ -1,6 +1,6 @@
 # img2color
 
 ## Dependencies
-* PIL: ```pip install PIL```
+* Pillow: ```pip install Pillow```
 
 ## Usage
