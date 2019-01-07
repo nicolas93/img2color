@@ -28,7 +28,7 @@ This image is used for Tests. It was provided by https://www.pexels.com .
 
 
 ### Color-Palette output:
-![test image with color-palette](https://raw.githubusercontent.com/nicolas93/img2color/master/testimage.jpeg)
+![test image with color-palette](https://raw.githubusercontent.com/nicolas93/img2color/master/testimage.jpeg_palette.png)
 
 ### html-color-code
 ```
