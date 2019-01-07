@@ -5,7 +5,8 @@
 
 ## Usage
 ```
-usage: img2color.py [-h] [--output-format {image-palette,html-color-code}]
+usage: img2color.py [-h] [-k K]
+                    [--output-format {image-palette,silhouette,html-color-code}]
                     image
 
 Find main colors in a given image.
@@ -15,7 +16,8 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  --output-format {image-palette,html-color-code}
+  -k K                  Custom K for KMeans algorithm
+  --output-format {image-palette,silhouette,html-color-code}
                         Output-format
 ```
 
@@ -28,7 +30,12 @@ This image is used for tests. It was provided by https://www.pexels.com .
 
 
 ### Color-Palette output(k=5):
+Main  colors are shown in a palette next to the image.
 ![test image with color-palette](https://raw.githubusercontent.com/nicolas93/img2color/master/testimage.jpeg_pallette_k5.png)
+
+### Color-Silhouette output(k=5):
+In this example every pixel is colored in its nearest main-color.
+![test image with color-silhouette](https://raw.githubusercontent.com/nicolas93/img2color/master/testimage.jpeg_silhouette_k5.png)
 
 ### html-color-code
 ```

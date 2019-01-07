@@ -79,7 +79,7 @@ def main():
 	parser = argparse.ArgumentParser(description='Find main colors in a given image.')
 	parser.add_argument("image", help="Image to be processed")
 	parser.add_argument("-k",type=int, help="Custom K for KMeans algorithm")
-	parser.add_argument("--output-format",type=str, choices=['image-palette', 'html-color-code'], help="Output-format")
+	parser.add_argument("--output-format",type=str, choices=['image-palette','silhouette', 'html-color-code'], help="Output-format")
 	args = parser.parse_args()
 	print args
 	image = Image.open(args.image)
@@ -98,6 +98,19 @@ def main():
 		for k_i in range(0, k_len):
 			img.paste(imgs[k_i], box=(image.size[0], k_i*(image.size[1]/k_len)))
 		img.save(args.image +"_pallette.png", "PNG")	
+	elif(args.output_format == "silhouette"):
+		img = Image.new('RGB', (image.size[0], image.size[1]))
+		for x in range(0, img.size[0]):
+			for y in range(0, img.size[1]):
+				minimum = len(k)
+				difference = 766
+				for l in range(0, len(k)):
+					new_diff = color_diff(image.getpixel((x, y)), k[l])
+					if(new_diff < difference):
+						difference = new_diff
+						minimum = l
+				img.putpixel((x,y), tuple(k[minimum]))
+		img.save(args.image +"_silhouette.png", "PNG")
 	else:
 		print "#%02x%02x%02x" % (k[0][0],k[0][1],k[0][2])
 		print "#%02x%02x%02x" % (k[1][0],k[1][1],k[1][2])
