@@ -41,8 +41,7 @@ def assign_cluster(im, k, cluster, width, height):
 					minimum = l
 			cluster[minimum].append(im.getpixel((i, j)))
 
-def kmeans(image):
-	im = Image.open(image)
+def kmeans(im):
 	width, height = im.size
 	k = []
 	cluster = []
@@ -81,6 +80,7 @@ def kmeans(image):
 	print len(cluster3[2])
 	print width
 	print height	
+	return k
 
 
 
@@ -89,8 +89,19 @@ def main():
 	parser.add_argument("image", help="Image to be processed")
 	args = parser.parse_args()
 	print args
-	kmeans(args.image)
-	
+	image = Image.open(args.image)
+	k = kmeans(image)
+	img = Image.new('RGB', (image.size[0]+100, image.size[1]))
+	img.paste(image)
+	img0 = Image.new('RGB', (100, image.size[1]/3), color = tuple(k[0]))
+ 	img1 = Image.new('RGB', (100, image.size[1]/3), color = tuple(k[1]))
+ 	img2 = Image.new('RGB', (100, image.size[1]/3), color = tuple(k[2]))
+ 	
+ 	img.paste(img0, box=(image.size[0], 0))
+ 	img.paste(img1, box=(image.size[0], image.size[1]/3))
+ 	img.paste(img2, box=(image.size[0], 2*image.size[1]/3))
+
+	img.save("a.png", "PNG")	
 
 if __name__ == "__main__":
     main()
