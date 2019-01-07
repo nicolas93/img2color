@@ -75,11 +75,6 @@ def kmeans(im):
 	k[1] = med(cluster3[1], k[1])
 	k[2] = med(cluster3[2], k[2])
 	print k
-	print len(cluster3[0])
-	print len(cluster3[1])
-	print len(cluster3[2])
-	print width
-	print height	
 	return k
 
 
@@ -87,21 +82,29 @@ def kmeans(im):
 def main():
 	parser = argparse.ArgumentParser(description='Find main colors in a given image.')
 	parser.add_argument("image", help="Image to be processed")
+	parser.add_argument("--output-format",type=str, choices=['image-palette', 'html-color-code'], help="Output-format")
 	args = parser.parse_args()
 	print args
 	image = Image.open(args.image)
 	k = kmeans(image)
-	img = Image.new('RGB', (image.size[0]+100, image.size[1]))
-	img.paste(image)
-	img0 = Image.new('RGB', (100, image.size[1]/3), color = tuple(k[0]))
- 	img1 = Image.new('RGB', (100, image.size[1]/3), color = tuple(k[1]))
- 	img2 = Image.new('RGB', (100, image.size[1]/3), color = tuple(k[2]))
- 	
- 	img.paste(img0, box=(image.size[0], 0))
- 	img.paste(img1, box=(image.size[0], image.size[1]/3))
- 	img.paste(img2, box=(image.size[0], 2*image.size[1]/3))
+	if(args.output_format == "image-palette"):
+		img = Image.new('RGB', (image.size[0]+100, image.size[1]))
+		img.paste(image)
+		img0 = Image.new('RGB', (100, image.size[1]/3), color = tuple(k[0]))
+		img1 = Image.new('RGB', (100, image.size[1]/3), color = tuple(k[1]))
+		img2 = Image.new('RGB', (100, image.size[1]/3), color = tuple(k[2]))
+		
+		img.paste(img0, box=(image.size[0], 0))
+		img.paste(img1, box=(image.size[0], image.size[1]/3))
+		img.paste(img2, box=(image.size[0], 2*image.size[1]/3))
 
-	img.save("a.png", "PNG")	
+		img.save(args.image +"_pallette.png", "PNG")	
+	else:
+		print "#%02x%02x%02x" % (k[0][0],k[0][1],k[0][2])
+		print "#%02x%02x%02x" % (k[1][0],k[1][1],k[1][2])
+		print "#%02x%02x%02x" % (k[2][0],k[2][1],k[2][2])
+
+
 
 if __name__ == "__main__":
-    main()
+	main()
