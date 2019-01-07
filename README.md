@@ -23,12 +23,12 @@ optional arguments:
 ## Examples
 
 ### Testimage
-This image is used for Tests. It was provided by https://www.pexels.com .
+This image is used for tests. It was provided by https://www.pexels.com .
 ![test image](https://raw.githubusercontent.com/nicolas93/img2color/master/testimage.jpeg)
 
 
-### Color-Palette output:
-![test image with color-palette](https://raw.githubusercontent.com/nicolas93/img2color/master/testimage.jpeg_pallette.png)
+### Color-Palette output(k=5):
+![test image with color-palette](https://raw.githubusercontent.com/nicolas93/img2color/master/testimage.jpeg_pallette_k5.png)
 
 ### html-color-code
 ```

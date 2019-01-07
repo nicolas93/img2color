@@ -28,7 +28,7 @@ def med(cluster, k):
 	return [r,g,b]
 
 
-def assign_cluster(im, k, cluster, width, height):
+def assign_cluster(im, k, cluster, width, height, k_len):
 	minimum = len(k)
 	for i in range(0, width):
 		for j in range(0, height):
@@ -41,39 +41,35 @@ def assign_cluster(im, k, cluster, width, height):
 					minimum = l
 			cluster[minimum].append(im.getpixel((i, j)))
 
-def kmeans(im):
+def med_ks(k, cluster):
+	for i in range(0, len(k)):
+		k[i] = med(cluster[i], k[i])
+
+def kmeans(im, k_len):
 	width, height = im.size
 	k = []
 	cluster = []
 	cluster1 = []
 	cluster2 = []
 	cluster3 = []
-	for i in range(0,3):
+	for i in range(0,k_len):
 		k.append(im.getpixel((random.randint(0,width), random.randint(0,height))))
 		cluster.append([])
 		cluster1.append([])
 		cluster2.append([])
 		cluster3.append([])
 	print k
-	assign_cluster(im, k, cluster, width, height)
-	k[0] = med(cluster[0], k[0])
-	k[1] = med(cluster[1], k[1])
-	k[2] = med(cluster[2], k[2])
+	assign_cluster(im, k, cluster, width, height, k_len)
+	med_ks(k, cluster)
 	print k
-	assign_cluster(im, k, cluster1, width, height)
-	k[0] = med(cluster1[0], k[0])
-	k[1] = med(cluster1[1], k[1])
-	k[2] = med(cluster1[2], k[2])
+	assign_cluster(im, k, cluster1, width, height, k_len)
+	med_ks(k, cluster1)
 	print k
-	assign_cluster(im, k, cluster2, width, height)
-	k[0] = med(cluster2[0], k[0])
-	k[1] = med(cluster2[1], k[1])
-	k[2] = med(cluster2[2], k[2])
+	assign_cluster(im, k, cluster2, width, height, k_len)
+	med_ks(k, cluster2)
 	print k
-	assign_cluster(im, k, cluster3, width, height)
-	k[0] = med(cluster3[0], k[0])
-	k[1] = med(cluster3[1], k[1])
-	k[2] = med(cluster3[2], k[2])
+	assign_cluster(im, k, cluster3, width, height, k_len)
+	med_ks(k, cluster3)
 	print k
 	return k
 
@@ -82,22 +78,25 @@ def kmeans(im):
 def main():
 	parser = argparse.ArgumentParser(description='Find main colors in a given image.')
 	parser.add_argument("image", help="Image to be processed")
+	parser.add_argument("-k",type=int, help="Custom K for KMeans algorithm")
 	parser.add_argument("--output-format",type=str, choices=['image-palette', 'html-color-code'], help="Output-format")
 	args = parser.parse_args()
 	print args
 	image = Image.open(args.image)
-	k = kmeans(image)
+	k_len = 0
+	if(args.k == None):
+		k_len = 3
+	else:
+		k_len = args.k
+	k = kmeans(image, k_len)
 	if(args.output_format == "image-palette"):
 		img = Image.new('RGB', (image.size[0]+100, image.size[1]))
 		img.paste(image)
-		img0 = Image.new('RGB', (100, image.size[1]/3), color = tuple(k[0]))
-		img1 = Image.new('RGB', (100, image.size[1]/3), color = tuple(k[1]))
-		img2 = Image.new('RGB', (100, image.size[1]/3), color = tuple(k[2]))
-		
-		img.paste(img0, box=(image.size[0], 0))
-		img.paste(img1, box=(image.size[0], image.size[1]/3))
-		img.paste(img2, box=(image.size[0], 2*image.size[1]/3))
-
+		imgs = []
+		for k_i in range(0, k_len):
+			imgs.append(Image.new('RGB', (100, image.size[1]/k_len), color = tuple(k[k_i])))
+		for k_i in range(0, k_len):
+			img.paste(imgs[k_i], box=(image.size[0], k_i*(image.size[1]/k_len)))
 		img.save(args.image +"_pallette.png", "PNG")	
 	else:
 		print "#%02x%02x%02x" % (k[0][0],k[0][1],k[0][2])
