@@ -110,7 +110,9 @@ def main():
 	parser = argparse.ArgumentParser(description='Find main colors in a given image.')
 	parser.add_argument("image", help="Image to be processed")
 	parser.add_argument("-k",type=int, help="Custom K for KMeans algorithm")
+	parser.add_argument('--fast', action='store_true', help="Activate fast mode")
 	parser.add_argument("-t",type=int, help="Number of threads to use for computation")
+	parser.add_argument("-ll")
 	parser.add_argument("--output-format",type=str, choices=['image-palette','silhouette', 'html-color-code'], help="Output-format")
 	args = parser.parse_args()
 	print args
@@ -123,7 +125,12 @@ def main():
 	t = 1
 	if not(args.t == None):
 		t = args.t
-	k = kmeans(image, k_len, t)
+	if(args.fast):
+		im = image.copy()
+		im.thumbnail((int(image.size[0]/10),int(image.size[1]/10)))
+		k = kmeans(im, k_len, t)
+	else:
+		k = kmeans(image, k_len, t)
 	if(args.output_format == "image-palette"):
 		img = Image.new('RGB', (image.size[0]+100, image.size[1]))
 		img.paste(image)
