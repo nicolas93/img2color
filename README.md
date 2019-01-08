@@ -5,7 +5,7 @@
 
 ## Usage
 ```
-usage: img2color.py [-h] [-k K] [-t T]
+usage: img2color.py [-h] [-k K] [--fast] [-t T]
                     [--output-format {image-palette,silhouette,html-color-code}]
                     image
 
@@ -17,6 +17,7 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   -k K                  Custom K for KMeans algorithm
+  --fast                Activate fast mode
   -t T                  Number of threads to use for computation
   --output-format {image-palette,silhouette,html-color-code}
                         Output-format

@@ -109,28 +109,19 @@ def kmeans(im, k_len, t):
 def main():
 	parser = argparse.ArgumentParser(description='Find main colors in a given image.')
 	parser.add_argument("image", help="Image to be processed")
-	parser.add_argument("-k",type=int, help="Custom K for KMeans algorithm")
+	parser.add_argument("-k",type=int, help="Custom K for KMeans algorithm", default=3)
 	parser.add_argument('--fast', action='store_true', help="Activate fast mode")
-	parser.add_argument("-t",type=int, help="Number of threads to use for computation")
-	parser.add_argument("-ll")
-	parser.add_argument("--output-format",type=str, choices=['image-palette','silhouette', 'html-color-code'], help="Output-format")
+	parser.add_argument("-t",type=int, help="Number of threads to use for computation",default=1)
+	parser.add_argument("--output-format",type=str, choices=['image-palette','silhouette', 'html-color-code'], help="Output-format", default="html-color-code")
 	args = parser.parse_args()
 	print args
 	image = Image.open(args.image)
-	k_len = 0
-	if(args.k == None):
-		k_len = 3
-	else:
-		k_len = args.k
-	t = 1
-	if not(args.t == None):
-		t = args.t
 	if(args.fast):
 		im = image.copy()
 		im.thumbnail((int(image.size[0]/10),int(image.size[1]/10)))
-		k = kmeans(im, k_len, t)
+		k = kmeans(im, args.k, args.t)
 	else:
-		k = kmeans(image, k_len, t)
+		k = kmeans(image, args.k, args.t)
 	if(args.output_format == "image-palette"):
 		img = Image.new('RGB', (image.size[0]+100, image.size[1]))
 		img.paste(image)
