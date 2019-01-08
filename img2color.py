@@ -4,6 +4,10 @@ from PIL import Image
 import sys
 import random
 import argparse
+import threading
+
+
+lock = threading.Lock()
 
 def color_diff(a, b):
 	d0 = a[0]-b[0]
@@ -27,6 +31,33 @@ def med(cluster, k):
 	b = b/len(cluster)
 	return [r,g,b]
 
+def calc_thread(image, k, cluster, width, height, k_len, offset):
+	minimum = len(k)
+	for i in range(offset, offset+width):
+		for j in range(0, height):
+			minimum = len(k)
+			difference = 766
+			for l in range(0, len(k)):
+				new_diff = color_diff(image.getpixel((i, j)), k[l])
+				if(new_diff < difference):
+					difference = new_diff
+					minimum = l
+			lock.acquire()
+			cluster[minimum].append(image.getpixel((i, j)))
+			lock.release()
+
+
+
+def assign_cluster_t(im, k, cluster, width, height, k_len, t_num):
+	tl = []
+	for i in range(0, t_num):
+		t = threading.Thread(target=calc_thread, args=(im, k, cluster, int(round(width/t_num)), height, k_len, i*int(round(width/t_num)),))
+		tl.append(t)
+	for t in tl:
+		t.start()
+	for t in tl:
+		t.join()
+
 
 def assign_cluster(im, k, cluster, width, height, k_len):
 	minimum = len(k)
@@ -45,7 +76,7 @@ def med_ks(k, cluster):
 	for i in range(0, len(k)):
 		k[i] = med(cluster[i], k[i])
 
-def kmeans(im, k_len):
+def kmeans(im, k_len, t):
 	width, height = im.size
 	k = []
 	cluster = []
@@ -59,16 +90,16 @@ def kmeans(im, k_len):
 		cluster2.append([])
 		cluster3.append([])
 	print k
-	assign_cluster(im, k, cluster, width, height, k_len)
+	assign_cluster_t(im, k, cluster, width, height, k_len, t)
 	med_ks(k, cluster)
 	print k
-	assign_cluster(im, k, cluster1, width, height, k_len)
+	assign_cluster_t(im, k, cluster1, width, height, k_len, t)
 	med_ks(k, cluster1)
 	print k
-	assign_cluster(im, k, cluster2, width, height, k_len)
+	assign_cluster_t(im, k, cluster2, width, height, k_len, t)
 	med_ks(k, cluster2)
 	print k
-	assign_cluster(im, k, cluster3, width, height, k_len)
+	assign_cluster_t(im, k, cluster3, width, height, k_len, t)
 	med_ks(k, cluster3)
 	print k
 	return k
@@ -79,6 +110,7 @@ def main():
 	parser = argparse.ArgumentParser(description='Find main colors in a given image.')
 	parser.add_argument("image", help="Image to be processed")
 	parser.add_argument("-k",type=int, help="Custom K for KMeans algorithm")
+	parser.add_argument("-t",type=int, help="Number of threads to use for computation")
 	parser.add_argument("--output-format",type=str, choices=['image-palette','silhouette', 'html-color-code'], help="Output-format")
 	args = parser.parse_args()
 	print args
@@ -88,7 +120,10 @@ def main():
 		k_len = 3
 	else:
 		k_len = args.k
-	k = kmeans(image, k_len)
+	t = 1
+	if not(args.t == None):
+		t = args.t
+	k = kmeans(image, k_len, t)
 	if(args.output_format == "image-palette"):
 		img = Image.new('RGB', (image.size[0]+100, image.size[1]))
 		img.paste(image)
