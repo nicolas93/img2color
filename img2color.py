@@ -147,10 +147,8 @@ def main():
 				img.putpixel((x,y), tuple(k[minimum]))
 		img.save(args.image +"_silhouette.png", "PNG")
 	else:
-		print "#%02x%02x%02x" % (k[0][0],k[0][1],k[0][2])
-		print "#%02x%02x%02x" % (k[1][0],k[1][1],k[1][2])
-		print "#%02x%02x%02x" % (k[2][0],k[2][1],k[2][2])
-
+		for k_i in k:
+			print "#%02x%02x%02x" % (k_i[0],k_i[1],k_i[2])
 
 
 if __name__ == "__main__":
