@@ -5,6 +5,7 @@ import "fmt"
 import "log"
 import "flag"
 import "image"
+import "math/rand"
 import _ "image/jpeg"
 import _ "image/png"
 import _ "image/gif"
@@ -16,7 +17,7 @@ func assign_k(){
 	fmt.Println(ks)
 }
 
-func color_diff(a [3]int, b [3]int){
+func color_diff(a [3]int, b [3]int) int{
 	var d [3]int
 	d[0] = a[0]-b[0]
 	d[1] = a[1]-b[1]
@@ -30,8 +31,16 @@ func color_diff(a [3]int, b [3]int){
 func kmeans(image image.Image, k int, t int){ 
 	fmt.Println(image.At(k,k))
 	fmt.Println(image.Bounds().Max.X)
-	var k_med [k][3]int
-	var k_mat [image.Bounds().Max.X][image.Bounds().Max.Y]int
+	// CONSTANT ARRAY / K !!
+	var k_med [5][3]int
+	r,_,_,_ :=image.At(0,0).RGBA()
+	fmt.Println(r/257)
+	rand.Seed(int64(r/257))
+	for i:=0; i < k; i++ {
+		k_med[i]=[3]int{int(rand.Int31n(255)), int(rand.Int31n(255)), int(rand.Int31n(255))}
+	}
+	fmt.Println(k_med)
+	//var k_mat [image.Bounds().Max.X][image.Bounds().Max.Y]int
 	for x:=0; x < image.Bounds().Max.X; x++{
 		for y:=0;  y< image.Bounds().Max.Y; y++{
 
