@@ -12,21 +12,38 @@ import _ "image/gif"
 
 
 
-func assign_k(){
-	var ks [1920][1080]int
-	fmt.Println(ks)
-}
-
 func color_diff(a [3]int, b [3]int) int{
 	var d [3]int
-	d[0] = a[0]-b[0]
-	d[1] = a[1]-b[1]
-	d[2] = a[2]-b[2]
+	d[0] = a[0]/257-b[0]
+	d[1] = a[1]/257-b[1]
+	d[2] = a[2]/257-b[2]
 	if(d[0]<0){ d[0] *= -1}
 	if(d[1]<0){ d[1] *= -1}
 	if(d[2]<0){ d[2] *= -1}
 	return d[0]+d[1]+d[2]
 }
+
+
+
+func assign_k(image image.Image, k int, k_med *[5][3]int, k_mat *[1920][1080]int,){
+	for x:=0; x < (image).Bounds().Max.X; x++{
+		for y:=0;  y< (image).Bounds().Max.Y; y++{
+			minimum := k
+			difference := 766
+			for i:=0; i<k; i++{
+				R,G,B,_ := image.At(x,y).RGBA()
+				new_diff := color_diff([3]int{int(R),int(G),int(B)}, k_med[i])
+				if new_diff < difference{
+					difference = new_diff
+					minimum = i
+				}
+			}
+			k_mat[x][y] = minimum
+		}
+	}
+}
+
+
 
 func kmeans(image image.Image, k int, t int){ 
 	fmt.Println(image.At(k,k))
@@ -41,11 +58,11 @@ func kmeans(image image.Image, k int, t int){
 	}
 	fmt.Println(k_med)
 	//var k_mat [image.Bounds().Max.X][image.Bounds().Max.Y]int
-	for x:=0; x < image.Bounds().Max.X; x++{
-		for y:=0;  y< image.Bounds().Max.Y; y++{
-
-		}
-	}
+	// CONSTANT ARRAY! hardcoded!
+	var k_mat [1920][1080]int
+	assign_k(image, k, &k_med, &k_mat)
+	fmt.Println(k_mat[0])
+	
 }
 
 func main() {
