@@ -25,7 +25,7 @@ func color_diff(a [3]int, b [3]int) int{
 
 
 
-func assign_k(image image.Image, k int, k_med *[5][3]int, k_mat *[1920][1080]int,){
+func assign_k(image image.Image, k int, k_med *[5][3]int, k_mat *[1920][1080]int){
 	for x:=0; x < (image).Bounds().Max.X; x++{
 		for y:=0;  y< (image).Bounds().Max.Y; y++{
 			minimum := k
@@ -44,10 +44,30 @@ func assign_k(image image.Image, k int, k_med *[5][3]int, k_mat *[1920][1080]int
 }
 
 
+func medium(image image.Image, k int, width int, height int, k_med *[5][3]int, k_mat *[1920][1080]int){
+	for i:=0; i<k; i++{
+		count:=0
+		for x:=0; x<width; x++{
+			for y:=0; y<height; y++{
+				if(k_mat[x][y] == i){
+					count++
+					r,g,b,_ := image.At(x,y).RGBA()
+					k_med[i][0] += int(r)/257
+					k_med[i][1] += int(g)/257
+					k_med[i][2] += int(b)/257
+				}
+			}
+		}
+		if count > 0{
+			k_med[i][0] /= count
+			k_med[i][1] /= count
+			k_med[i][2] /= count
+		}
+	}
+}
+
 
 func kmeans(image image.Image, k int, t int){ 
-	fmt.Println(image.At(k,k))
-	fmt.Println(image.Bounds().Max.X)
 	// CONSTANT ARRAY / K !!
 	var k_med [5][3]int
 	r,_,_,_ :=image.At(0,0).RGBA()
@@ -60,8 +80,12 @@ func kmeans(image image.Image, k int, t int){
 	//var k_mat [image.Bounds().Max.X][image.Bounds().Max.Y]int
 	// CONSTANT ARRAY! hardcoded!
 	var k_mat [1920][1080]int
-	assign_k(image, k, &k_med, &k_mat)
-	fmt.Println(k_mat[0])
+	for i:=0; i<5; i++{
+		assign_k(image, k, &k_med, &k_mat)
+		medium(image, k, image.Bounds().Max.X, image.Bounds().Max.Y, &k_med, &k_mat)
+	}
+
+	fmt.Println(k_med)
 	
 }
 
