@@ -4,6 +4,8 @@
 * Pillow: ```pip install Pillow```
 
 ## Usage
+
+### Python
 ```
 usage: img2color.py [-h] [-k K] [--fast] [-t T]
                     [--output-format {image-palette,silhouette,html-color-code}]
@@ -23,6 +25,20 @@ optional arguments:
                         Output-format
 ```
 
+### Go
+```
+Usage of img2color.go:
+  -fast
+    	Activate fast mode.
+  -image string
+    	Image to be processed
+  -k int
+    	Number of colors to find (default 5)
+  -output string
+    	Output option (default "pallette")
+  -t int
+    	Number of threads to use for computation (default 1)
+```
 
 ## Examples
 
