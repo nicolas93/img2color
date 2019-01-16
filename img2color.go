@@ -117,6 +117,24 @@ func main() {
 		fmt.Printf("#%02x%02x%02x\n", k_med[i][0], k_med[i][1], k_med[i][2])
 	}
 
+	img := image.NewRGBA(image.Rectangle{image.Point{0,0}, image.Point{m.Bounds().Max.X, m.Bounds().Max.Y}})
+	for x:=0; x<m.Bounds().Max.X; x++{
+		for y:=0; y<m.Bounds().Max.Y; y++{
+			minimum := *k_ptr
+			difference := 766
+			for i := 0; i < *k_ptr; i++ {
+				R, G, B, _ := m.At(x, y).RGBA()
+				new_diff := color_diff([3]int{int(R), int(G), int(B)}, k_med[i])
+				if new_diff < difference {
+					difference = new_diff
+					minimum = i
+				}
+			}
+			img.Set(x, y, color.RGBA{k_med[minimum][0],k_med[minimum][1],k_med[minimum][2],0xff})
+		}
+	}
+	f, _ := os.Create("image.png")
+	png.Encode(f, img)
 
 	defer reader.Close()
 }
