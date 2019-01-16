@@ -67,7 +67,7 @@ func medium(image image.Image, k int, width int, height int, k_med [][]int, k_ma
 	}
 }
 
-func kmeans(image image.Image, k int, t int) {
+func kmeans(image image.Image, k int, t int) [][]int {
 	k_med := make([][]int, k)
 	r, _, _, _ := image.At(0, 0).RGBA()
 	fmt.Println(r / 257)
@@ -85,8 +85,7 @@ func kmeans(image image.Image, k int, t int) {
 		medium(image, k, image.Bounds().Max.X, image.Bounds().Max.Y, k_med, k_mat)
 	}
 
-	fmt.Println(k_med)
-
+	return k_med
 }
 
 func main() {
@@ -96,6 +95,10 @@ func main() {
 	var image_file string
 	flag.StringVar(&image_file, "image", "", "Image to be processed")
 	flag.Parse()
+
+	fmt.Println("k: ", *k_ptr)
+	fmt.Println("t: ", *t_ptr)
+	fmt.Println("fast?: ", *fast_ptr)
 
 	reader, err := os.Open(image_file)
 	if err != nil {
@@ -107,11 +110,13 @@ func main() {
 	}
 	bounds := m.Bounds()
 	fmt.Println(bounds)
-	kmeans(m, *k_ptr, *t_ptr)
+	k_med := kmeans(m, *k_ptr, *t_ptr)
+
+	fmt.Println(k_med)
+	for i:=0; i<len(k_med); i++{
+		fmt.Printf("#%02x%02x%02x\n", k_med[i][0], k_med[i][1], k_med[i][2])
+	}
+
 
 	defer reader.Close()
-
-	fmt.Println("k: ", *k_ptr)
-	fmt.Println("t: ", *t_ptr)
-	fmt.Println("fast?: ", *fast_ptr)
 }
