@@ -69,7 +69,7 @@ func medium(image image.Image, k int, width int, height int, k_med [][]int, k_ma
 	}
 }
 
-func kmeans(image image.Image, k int, t int) [][]int {
+func kmeans(image image.Image, k int, t int, n int) [][]int {
 	k_med := make([][]int, k)
 	r, _, _, _ := image.At(0, 0).RGBA()
 	fmt.Println(r / 257)
@@ -82,7 +82,7 @@ func kmeans(image image.Image, k int, t int) [][]int {
 	for i:=0; i<len(k_mat);i++{
 		k_mat[i] = make([]int, image.Bounds().Max.Y)
 	}
-	for i := 0; i < 5; i++ {
+	for i := 0; i < n; i++ {
 		assign_k(image, k, k_med, k_mat)
 		medium(image, k, image.Bounds().Max.X, image.Bounds().Max.Y, k_med, k_mat)
 	}
@@ -93,6 +93,7 @@ func kmeans(image image.Image, k int, t int) [][]int {
 func main() {
 	k_ptr := flag.Int("k", 5, "Number of colors to find")
 	t_ptr := flag.Int("t", 1, "Number of threads to use for computation")
+	n_ptr := flag.Int("n", 5, "Number of rounds for computation")
 	fast_ptr := flag.Bool("fast", false, "Activate fast mode.")
 	var image_file string
 	flag.StringVar(&image_file, "image", "", "Image to be processed")
@@ -114,7 +115,7 @@ func main() {
 	}
 	bounds := m.Bounds()
 	fmt.Println(bounds)
-	k_med := kmeans(m, *k_ptr, *t_ptr)
+	k_med := kmeans(m, *k_ptr, *t_ptr, *n_ptr)
 
 	fmt.Println(k_med)
 	for i:=0; i<len(k_med); i++{
