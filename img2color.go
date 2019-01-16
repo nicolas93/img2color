@@ -5,6 +5,7 @@ import "fmt"
 import "log"
 import "flag"
 import "image"
+import "strings"
 import "math/rand"
 import _ "image/jpeg"
 import "image/png"
@@ -95,6 +96,8 @@ func main() {
 	fast_ptr := flag.Bool("fast", false, "Activate fast mode.")
 	var image_file string
 	flag.StringVar(&image_file, "image", "", "Image to be processed")
+	var output_ptr string
+	flag.StringVar(&output_ptr, "output", "pallette", "Output option")
 	flag.Parse()
 
 	fmt.Println("k: ", *k_ptr)
@@ -118,24 +121,45 @@ func main() {
 		fmt.Printf("#%02x%02x%02x\n", k_med[i][0], k_med[i][1], k_med[i][2])
 	}
 
-	img := image.NewRGBA(image.Rectangle{image.Point{0,0}, image.Point{m.Bounds().Max.X, m.Bounds().Max.Y}})
-	for x:=0; x<m.Bounds().Max.X; x++{
-		for y:=0; y<m.Bounds().Max.Y; y++{
-			minimum := *k_ptr
-			difference := 766
-			for i := 0; i < *k_ptr; i++ {
-				R, G, B, _ := m.At(x, y).RGBA()
-				new_diff := color_diff([3]int{int(R), int(G), int(B)}, k_med[i])
-				if new_diff < difference {
-					difference = new_diff
-					minimum = i
+	fmt.Println(output_ptr)
+
+	if strings.Compare(output_ptr, "silhouette")==0{
+		img := image.NewRGBA(image.Rectangle{image.Point{0,0}, image.Point{m.Bounds().Max.X, m.Bounds().Max.Y}})
+		for x:=0; x<m.Bounds().Max.X; x++{
+			for y:=0; y<m.Bounds().Max.Y; y++{
+				minimum := *k_ptr
+				difference := 766
+				for i := 0; i < *k_ptr; i++ {
+					R, G, B, _ := m.At(x, y).RGBA()
+					new_diff := color_diff([3]int{int(R), int(G), int(B)}, k_med[i])
+					if new_diff < difference {
+						difference = new_diff
+						minimum = i
+					}
 				}
+				img.Set(x, y, color.RGBA{uint8(k_med[minimum][0]),uint8(k_med[minimum][1]),uint8(k_med[minimum][2]),0xff})
 			}
-			img.Set(x, y, color.RGBA{uint8(k_med[minimum][0]),uint8(k_med[minimum][1]),uint8(k_med[minimum][2]),0xff})
 		}
+		f, _ := os.Create("image_s.png")
+		png.Encode(f, img)
 	}
-	f, _ := os.Create("image.png")
-	png.Encode(f, img)
+
+	if strings.Compare(output_ptr, "pallette")==0{
+		img := image.NewRGBA(image.Rectangle{image.Point{0,0}, image.Point{m.Bounds().Max.X +100, m.Bounds().Max.Y}})
+		for x:=0; x<m.Bounds().Max.X; x++{
+			for y:=0; y<m.Bounds().Max.Y; y++{
+				img.Set(x,y, m.At(x,y))
+			}
+		}
+		k := *k_ptr
+		for x:=m.Bounds().Max.X; x<m.Bounds().Max.X+100; x++{
+			for y:=0; y<m.Bounds().Max.Y; y++{
+				img.Set(x, y, color.RGBA{uint8(k_med[(y*k)/m.Bounds().Max.Y][0]),uint8(k_med[(y*k)/m.Bounds().Max.Y][1]),uint8(k_med[(y*k)/m.Bounds().Max.Y][2]),0xff})
+			}
+		}
+		f, _ := os.Create("image_p.png")
+		png.Encode(f, img)
+	}
 
 	defer reader.Close()
 }
