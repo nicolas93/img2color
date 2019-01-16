@@ -48,3 +48,9 @@ In this example every pixel is colored in its nearest main-color.
 ```
 
 ## Kmeans-Algorithm
+
+The kmeans algorithm is used to calculate k mean points of a set of points.
+In each computation step every point is assigned to the nearest mean point. 
+Then of every (k) subset a new mean point is calculated. The mean point does not have to be in the subset.
+
+In this project we use the color of each pixel as a 3 dimensional point, and thus k mean (or dominant) colors are calculated. 
