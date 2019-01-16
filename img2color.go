@@ -7,8 +7,9 @@ import "flag"
 import "image"
 import "math/rand"
 import _ "image/jpeg"
-import _ "image/png"
+import "image/png"
 import _ "image/gif"
+import "image/color"
 
 func color_diff(a [3]int, b []int) int {
 	var d [3]int
@@ -130,7 +131,7 @@ func main() {
 					minimum = i
 				}
 			}
-			img.Set(x, y, color.RGBA{k_med[minimum][0],k_med[minimum][1],k_med[minimum][2],0xff})
+			img.Set(x, y, color.RGBA{uint8(k_med[minimum][0]),uint8(k_med[minimum][1]),uint8(k_med[minimum][2]),0xff})
 		}
 	}
 	f, _ := os.Create("image.png")
