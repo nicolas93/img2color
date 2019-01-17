@@ -6,6 +6,7 @@ import "log"
 import "flag"
 import "image"
 import "strings"
+import "math"
 import "math/rand"
 import _ "image/jpeg"
 import "image/png"
@@ -29,8 +30,12 @@ func color_diff(a [3]int, b []int) int {
 	return d[0] + d[1] + d[2]
 }
 
-func assign_k(image image.Image, k int, k_med [][]int, k_mat [][]int) {
-	for x := 0; x < (image).Bounds().Max.X; x++ {
+func assign_k(image image.Image, k int, k_med [][]int, start int, stop int, ch chan [][]int) {
+	tmp_mat := make([][]int, stop-start+1)
+	for i:=0; i<len(tmp_mat);i++{
+		tmp_mat[i] = make([]int, image.Bounds().Max.Y)
+	}
+	for x := start; x < stop; x++ {
 		for y := 0; y < (image).Bounds().Max.Y; y++ {
 			minimum := k
 			difference := 766
@@ -42,9 +47,12 @@ func assign_k(image image.Image, k int, k_med [][]int, k_mat [][]int) {
 					minimum = i
 				}
 			}
-			k_mat[x][y] = minimum
+			tmp_mat[x-start][y] = minimum
 		}
 	}
+	tmp_mat[len(tmp_mat)-1][0] = start
+	tmp_mat[len(tmp_mat)-1][1] = stop
+	ch <- tmp_mat
 }
 
 func medium(image image.Image, k int, width int, height int, k_med [][]int, k_mat [][]int) {
@@ -70,6 +78,8 @@ func medium(image image.Image, k int, width int, height int, k_med [][]int, k_ma
 }
 
 func kmeans(image image.Image, k int, t int, n int) [][]int {
+	ch := make(chan [][]int)
+
 	k_med := make([][]int, k)
 	r, _, _, _ := image.At(0, 0).RGBA()
 	fmt.Println(r / 257)
@@ -83,7 +93,16 @@ func kmeans(image image.Image, k int, t int, n int) [][]int {
 		k_mat[i] = make([]int, image.Bounds().Max.Y)
 	}
 	for i := 0; i < n; i++ {
-		assign_k(image, k, k_med, k_mat)
+		for j:=0; j<t; j++{			
+			start := int(math.Round(float64(j)*float64(image.Bounds().Max.X)/float64(t)))
+			stop := int(math.Round((float64(j)+1)*float64(image.Bounds().Max.X)/float64(t)))-1
+			fmt.Printf("%d-%d", start, stop)
+			go assign_k(image, k, k_med, start, stop, ch)	
+		}
+		for j:=0; j<t; j++{
+			re := <-ch
+			copy(k_mat[re[len(re)-1][0]:re[len(re)-1][1]], re[0:len(re)-2]) 
+		}
 		medium(image, k, image.Bounds().Max.X, image.Bounds().Max.Y, k_med, k_mat)
 	}
 
