@@ -98,7 +98,7 @@ func main() {
 	var image_file string
 	flag.StringVar(&image_file, "image", "", "Image to be processed")
 	var output_ptr string
-	flag.StringVar(&output_ptr, "output", "pallette", "Output option")
+	flag.StringVar(&output_ptr, "output", "palette", "Output option")
 	flag.Parse()
 
 	fmt.Println("k: ", *k_ptr)
@@ -145,7 +145,7 @@ func main() {
 		png.Encode(f, img)
 	}
 
-	if strings.Compare(output_ptr, "pallette")==0{
+	if strings.Compare(output_ptr, "palette")==0{
 		img := image.NewRGBA(image.Rectangle{image.Point{0,0}, image.Point{m.Bounds().Max.X +100, m.Bounds().Max.Y}})
 		for x:=0; x<m.Bounds().Max.X; x++{
 			for y:=0; y<m.Bounds().Max.Y; y++{
