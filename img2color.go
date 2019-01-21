@@ -84,13 +84,11 @@ func kmeans(image image.Image, k int, t int, n int) [][]int {
 
 	k_med := make([][]int, k)
 	r, _, _, _ := image.At(0, 0).RGBA()
-	fmt.Println(r >> 8)
 	rand.Seed(int64(r >> 8))
 	for i := 0; i < k; i++ {
 		R, G, B, _ := image.At(int(rand.Int31n(int32(image.Bounds().Max.X))), int(rand.Int31n(int32(image.Bounds().Max.Y)))).RGBA()
 		k_med[i] = []int{int(R) >> 8, int(G) >> 8, int(B) >> 8}
 	}
-	fmt.Println(k_med)
 	k_mat := make([][]int, image.Bounds().Max.X)
 	for i := 0; i < len(k_mat); i++ {
 		k_mat[i] = make([]int, image.Bounds().Max.Y)
@@ -113,9 +111,9 @@ func kmeans(image image.Image, k int, t int, n int) [][]int {
 			k_med[k_m[3]] = k_m[:3]
 		}
 
-		fmt.Println(k_med)
+		fmt.Printf("\rProcessing:\t%.2f%%", (float64(i)*100)/float64(n))
 	}
-
+	fmt.Println("\nDone.")
 	return k_med
 }
 
@@ -123,16 +121,13 @@ func main() {
 	k_ptr := flag.Int("k", 5, "Number of colors to find")
 	t_ptr := flag.Int("t", 1, "Number of threads to use for computation")
 	n_ptr := flag.Int("n", 5, "Number of rounds for computation")
-	fast_ptr := flag.Bool("fast", false, "Activate fast mode.")
+//	fast_ptr := flag.Bool("fast", false, "Activate fast mode.")
 	var image_file string
 	flag.StringVar(&image_file, "image", "", "Image to be processed")
 	var output_ptr string
 	flag.StringVar(&output_ptr, "output", "palette", "Output option")
 	flag.Parse()
 
-	fmt.Println("k: ", *k_ptr)
-	fmt.Println("t: ", *t_ptr)
-	fmt.Println("fast?: ", *fast_ptr)
 
 	reader, err := os.Open(image_file)
 	if err != nil {
@@ -142,8 +137,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	bounds := m.Bounds()
-	fmt.Println(bounds)
+
 	k_med := kmeans(m, *k_ptr, *t_ptr, *n_ptr)
 
 	fmt.Println(k_med)
