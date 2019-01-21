@@ -77,8 +77,31 @@ func medium(image image.Image, k int, width int, height int, k_med [][]int, k_ma
 	}
 }
 
+func medium_k(image image.Image, k int, width int, height int,  k_mat [][]int, ch_m chan []int) {
+	k_m := make([]int, 3)
+	count := 0
+	for x := 0; x < width; x++ {
+		for y := 0; y < height; y++ {
+			if k_mat[x][y] == k {
+				count++
+				r, g, b, _ := image.At(x, y).RGBA()
+				k_m[0] += int(r) / 257
+				k_m[1] += int(g) / 257
+				k_m[2] += int(b) / 257
+			}
+		}
+	}
+	if count > 0 {
+		k_m[0] /= count
+		k_m[1] /= count
+		k_m[2] /= count
+	}
+	ch_m <- k_m
+}
+
 func kmeans(image image.Image, k int, t int, n int) [][]int {
 	ch := make(chan [][]int)
+	ch_m := make(chan []int)
 
 	k_med := make([][]int, k)
 	r, _, _, _ := image.At(0, 0).RGBA()
@@ -103,7 +126,14 @@ func kmeans(image image.Image, k int, t int, n int) [][]int {
 			re := <-ch
 			copy(k_mat[re[len(re)-1][0]:re[len(re)-1][1]], re[0:len(re)-2]) 
 		}
-		medium(image, k, image.Bounds().Max.X, image.Bounds().Max.Y, k_med, k_mat)
+		//medium(image, k, image.Bounds().Max.X, image.Bounds().Max.Y, k_med, k_mat)
+		for j:=0; j<k; j++{
+			go medium_k(image, j, image.Bounds().Max.X, image.Bounds().Max.Y, k_mat, ch_m)
+		}
+		for j:=0; j<k; j++{
+			k_med[j] = <- ch_m
+		}
+
 		fmt.Println(k_med)
 	}
 
