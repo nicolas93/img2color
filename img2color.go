@@ -96,12 +96,12 @@ func kmeans(image image.Image, k int, t int, n int) [][]int {
 	for i := 0; i < n; i++ {
 		for j := 0; j < t; j++ {
 			start := int(math.Round(float64(j) * float64(image.Bounds().Max.X) / float64(t)))
-			stop := int(math.Round((float64(j)+1)*float64(image.Bounds().Max.X)/float64(t))) - 1
+			stop := int(math.Round((float64(j)+1)*float64(image.Bounds().Max.X)/float64(t)))
 			go assign_k(image, k, k_med, start, stop, ch)
 		}
 		for j := 0; j < t; j++ {
 			re := <-ch
-			copy(k_mat[re[len(re)-1][0]:re[len(re)-1][1]], re[0:len(re)-2])
+			copy(k_mat[re[len(re)-1][0]:re[len(re)-1][1]], re[0:len(re)-1])
 		}
 		for j := 0; j < k; j++ {
 			go medium_k(image, j, image.Bounds().Max.X, image.Bounds().Max.Y, k_mat, ch_m)
@@ -120,7 +120,7 @@ func kmeans(image image.Image, k int, t int, n int) [][]int {
 func main() {
 	k_ptr := flag.Int("k", 5, "Number of colors to find")
 	t_ptr := flag.Int("t", 1, "Number of threads to use for computation")
-	n_ptr := flag.Int("n", 5, "Number of rounds for computation")
+	n_ptr := flag.Int("n", 10, "Number of rounds for computation")
 //	fast_ptr := flag.Bool("fast", false, "Activate fast mode.")
 	var image_file string
 	flag.StringVar(&image_file, "image", "", "Image to be processed")
