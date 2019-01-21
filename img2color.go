@@ -15,9 +15,9 @@ import "image/color"
 
 func color_diff(a [3]int, b []int) int {
 	var d [3]int
-	d[0] = a[0]/257 - b[0]
-	d[1] = a[1]/257 - b[1]
-	d[2] = a[2]/257 - b[2]
+	d[0] = a[0]>>8 - b[0]
+	d[1] = a[1]>>8 - b[1]
+	d[2] = a[2]>>8 - b[2]
 	if d[0] < 0 {
 		d[0] *= -1
 	}
@@ -55,17 +55,17 @@ func assign_k(image image.Image, k int, k_med [][]int, start int, stop int, ch c
 	ch <- tmp_mat
 }
 
-func medium_k(image image.Image, k int, width int, height int, k_mat [][]int, ch_m chan []int) {
-	k_m := make([]int, 3)
+func medium_k(image image.Image, j int, width int, height int, k_mat [][]int, ch_m chan []int) {
+	k_m := make([]int, 4)
 	count := 0
 	for x := 0; x < width; x++ {
 		for y := 0; y < height; y++ {
-			if k_mat[x][y] == k {
+			if k_mat[x][y] == j {
 				count++
 				r, g, b, _ := image.At(x, y).RGBA()
-				k_m[0] += int(r) / 257
-				k_m[1] += int(g) / 257
-				k_m[2] += int(b) / 257
+				k_m[0] += int(r) >> 8
+				k_m[1] += int(g) >> 8
+				k_m[2] += int(b) >> 8
 			}
 		}
 	}
@@ -74,6 +74,7 @@ func medium_k(image image.Image, k int, width int, height int, k_mat [][]int, ch
 		k_m[1] /= count
 		k_m[2] /= count
 	}
+	k_m[3] = j
 	ch_m <- k_m
 }
 
@@ -83,11 +84,11 @@ func kmeans(image image.Image, k int, t int, n int) [][]int {
 
 	k_med := make([][]int, k)
 	r, _, _, _ := image.At(0, 0).RGBA()
-	fmt.Println(r / 257)
-	rand.Seed(int64(r / 257))
+	fmt.Println(r >> 8)
+	rand.Seed(int64(r >> 8))
 	for i := 0; i < k; i++ {
 		R, G, B, _ := image.At(int(rand.Int31n(int32(image.Bounds().Max.X))), int(rand.Int31n(int32(image.Bounds().Max.Y)))).RGBA()
-		k_med[i] = []int{int(R) / 257, int(G) / 257, int(B) / 257}
+		k_med[i] = []int{int(R) >> 8, int(G) >> 8, int(B) >> 8}
 	}
 	fmt.Println(k_med)
 	k_mat := make([][]int, image.Bounds().Max.X)
@@ -104,12 +105,12 @@ func kmeans(image image.Image, k int, t int, n int) [][]int {
 			re := <-ch
 			copy(k_mat[re[len(re)-1][0]:re[len(re)-1][1]], re[0:len(re)-2])
 		}
-		//medium(image, k, image.Bounds().Max.X, image.Bounds().Max.Y, k_med, k_mat)
 		for j := 0; j < k; j++ {
 			go medium_k(image, j, image.Bounds().Max.X, image.Bounds().Max.Y, k_mat, ch_m)
 		}
 		for j := 0; j < k; j++ {
-			k_med[j] = <-ch_m
+			k_m := <-ch_m
+			k_med[k_m[3]] = k_m[:3]
 		}
 
 		fmt.Println(k_med)
