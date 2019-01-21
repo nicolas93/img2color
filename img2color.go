@@ -85,7 +85,8 @@ func kmeans(image image.Image, k int, t int, n int) [][]int {
 	fmt.Println(r / 257)
 	rand.Seed(int64(r / 257))
 	for i := 0; i < k; i++ {
-		k_med[i] = []int{int(rand.Int31n(255)), int(rand.Int31n(255)), int(rand.Int31n(255))}
+		R,G,B,_ := image.At(int(rand.Int31n(int32(image.Bounds().Max.X))),int(rand.Int31n(int32(image.Bounds().Max.Y)))).RGBA()
+		k_med[i] = []int{int(R)/257, int(G)/257, int(B)/257}
 	}
 	fmt.Println(k_med)
 	k_mat := make([][]int, image.Bounds().Max.X)
@@ -96,7 +97,6 @@ func kmeans(image image.Image, k int, t int, n int) [][]int {
 		for j:=0; j<t; j++{			
 			start := int(math.Round(float64(j)*float64(image.Bounds().Max.X)/float64(t)))
 			stop := int(math.Round((float64(j)+1)*float64(image.Bounds().Max.X)/float64(t)))-1
-			fmt.Printf("%d-%d", start, stop)
 			go assign_k(image, k, k_med, start, stop, ch)	
 		}
 		for j:=0; j<t; j++{
@@ -104,6 +104,7 @@ func kmeans(image image.Image, k int, t int, n int) [][]int {
 			copy(k_mat[re[len(re)-1][0]:re[len(re)-1][1]], re[0:len(re)-2]) 
 		}
 		medium(image, k, image.Bounds().Max.X, image.Bounds().Max.Y, k_med, k_mat)
+		fmt.Println(k_med)
 	}
 
 	return k_med
