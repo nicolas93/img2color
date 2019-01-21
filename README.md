@@ -1,7 +1,8 @@
 # img2color
 
 ## Dependencies
-* Pillow: ```pip install Pillow```
+* Python
+  * Pillow: ```pip install Pillow```
 
 ## Usage
 
