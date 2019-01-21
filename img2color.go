@@ -1,17 +1,19 @@
 package main
 
-import "os"
-import "fmt"
-import "log"
-import "flag"
-import "image"
-import "strings"
-import "math"
-import "math/rand"
-import _ "image/jpeg"
-import "image/png"
-import _ "image/gif"
-import "image/color"
+import (
+	"flag"
+	"fmt"
+	"image"
+	"image/color"
+	_ "image/gif"
+	_ "image/jpeg"
+	"image/png"
+	"log"
+	"math"
+	"math/rand"
+	"os"
+	"strings"
+)
 
 func color_diff(a [3]int, b []int) int {
 	var d [3]int
@@ -96,7 +98,7 @@ func kmeans(image image.Image, k int, t int, n int) [][]int {
 	for i := 0; i < n; i++ {
 		for j := 0; j < t; j++ {
 			start := int(math.Round(float64(j) * float64(image.Bounds().Max.X) / float64(t)))
-			stop := int(math.Round((float64(j)+1)*float64(image.Bounds().Max.X)/float64(t)))
+			stop := int(math.Round((float64(j) + 1) * float64(image.Bounds().Max.X) / float64(t)))
 			go assign_k(image, k, k_med, start, stop, ch)
 		}
 		for j := 0; j < t; j++ {
@@ -113,6 +115,7 @@ func kmeans(image image.Image, k int, t int, n int) [][]int {
 
 		fmt.Printf("\rProcessing:\t%.2f%%", (float64(i)*100)/float64(n))
 	}
+	fmt.Printf("\rProcessing:\t100.00%%")
 	fmt.Println("\nDone.")
 	return k_med
 }
@@ -121,13 +124,12 @@ func main() {
 	k_ptr := flag.Int("k", 5, "Number of colors to find")
 	t_ptr := flag.Int("t", 1, "Number of threads to use for computation")
 	n_ptr := flag.Int("n", 10, "Number of rounds for computation")
-//	fast_ptr := flag.Bool("fast", false, "Activate fast mode.")
+	//	fast_ptr := flag.Bool("fast", false, "Activate fast mode.")
 	var image_file string
 	flag.StringVar(&image_file, "image", "", "Image to be processed")
 	var output_ptr string
 	flag.StringVar(&output_ptr, "output", "palette", "Output option")
 	flag.Parse()
-
 
 	reader, err := os.Open(image_file)
 	if err != nil {
