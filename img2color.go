@@ -15,23 +15,6 @@ import (
 	"strings"
 )
 
-func color_diff(a [3]int, b []int) int {
-	var d [3]int
-	d[0] = a[0]>>8 - b[0]
-	d[1] = a[1]>>8 - b[1]
-	d[2] = a[2]>>8 - b[2]
-	if d[0] < 0 {
-		d[0] *= -1
-	}
-	if d[1] < 0 {
-		d[1] *= -1
-	}
-	if d[2] < 0 {
-		d[2] *= -1
-	}
-	return d[0] + d[1] + d[2]
-}
-
 func color_diff_euklid(a [3]int, b[]int) int {
 	return int(math.Sqrt(math.Pow(float64((a[0]>>8)-b[0]), 2)+math.Pow(float64((a[1]>>8)-b[1]), 2)+math.Pow(float64((a[2]>>8)-b[2]), 2)))
 }
