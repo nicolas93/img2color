@@ -32,6 +32,11 @@ func color_diff(a [3]int, b []int) int {
 	return d[0] + d[1] + d[2]
 }
 
+func color_diff_euklid(a [3]int, b[]int) int {
+	return int(math.Sqrt(math.Pow(float64((a[0]>>8)-b[0]), 2)+math.Pow(float64((a[1]>>8)-b[1]), 2)+math.Pow(float64((a[2]>>8)-b[2]), 2)))
+}
+
+
 func assign_k(image image.Image, k int, k_med [][]int, start int, stop int, ch chan [][]int) {
 	tmp_mat := make([][]int, stop-start+1)
 	for i := 0; i < len(tmp_mat); i++ {
@@ -43,7 +48,7 @@ func assign_k(image image.Image, k int, k_med [][]int, start int, stop int, ch c
 			difference := 766
 			for i := 0; i < k; i++ {
 				R, G, B, _ := image.At(x, y).RGBA()
-				new_diff := color_diff([3]int{int(R), int(G), int(B)}, k_med[i])
+				new_diff := color_diff_euklid([3]int{int(R), int(G), int(B)}, k_med[i])
 				if new_diff < difference {
 					difference = new_diff
 					minimum = i
@@ -157,7 +162,7 @@ func main() {
 				difference := 766
 				for i := 0; i < *k_ptr; i++ {
 					R, G, B, _ := m.At(x, y).RGBA()
-					new_diff := color_diff([3]int{int(R), int(G), int(B)}, k_med[i])
+					new_diff := color_diff_euklid([3]int{int(R), int(G), int(B)}, k_med[i])
 					if new_diff < difference {
 						difference = new_diff
 						minimum = i
