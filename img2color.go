@@ -15,11 +15,17 @@ import (
 	"strings"
 )
 
+// color_diff_euklid is a function to calculate the distance between to colors.
+// The parameters are a: a RGB-array with 16bit color values and b: a RGB-array with 8bit color values.
+// It returns the euklidian distance between the colors.
 func color_diff_euklid(a [3]int, b[]int) int {
 	return int(math.Sqrt(math.Pow(float64((a[0]>>8)-b[0]), 2)+math.Pow(float64((a[1]>>8)-b[1]), 2)+math.Pow(float64((a[2]>>8)-b[2]), 2)))
 }
 
-
+// assign_k is a function to assign each pixel of the image to one k.
+// Since it is to be run multithreaded, the result is returned via a channel
+// The start and stop of the assigned pixels are returned in the last field of the result matrix tmp_mat
+// This is done to achieve deterministic results
 func assign_k(image image.Image, k int, k_med [][]int, start int, stop int, ch chan [][]int) {
 	tmp_mat := make([][]int, stop-start+1)
 	for i := 0; i < len(tmp_mat); i++ {
@@ -45,6 +51,8 @@ func assign_k(image image.Image, k int, k_med [][]int, start int, stop int, ch c
 	ch <- tmp_mat
 }
 
+// medium_k is used to calculate the medium color of all pixels that are assigned to one k
+// It is used multithraded and the color is returned via a channel
 func medium_k(image image.Image, j int, width int, height int, k_mat [][]int, ch_m chan []int) {
 	k_m := make([]int, 4)
 	count := 0
@@ -68,6 +76,12 @@ func medium_k(image image.Image, j int, width int, height int, k_mat [][]int, ch
 	ch_m <- k_m
 }
 
+
+// kmeans is the function to calculate k mean colors
+// image is the image to be processed
+// k is the number of mean colors to be calculated
+// t is the number of threads to be used
+// n is the number of rounds the algorithm shall run. higher n achieves better results, but from a certain n up the mean colors will not change anymore
 func kmeans(image image.Image, k int, t int, n int) [][]int {
 	ch := make(chan [][]int)
 	ch_m := make(chan []int)
@@ -108,6 +122,9 @@ func kmeans(image image.Image, k int, t int, n int) [][]int {
 	return k_med
 }
 
+
+// main is used to interpret the parameters,
+// start the algorithm and output the results
 func main() {
 	k_ptr := flag.Int("k", 5, "Number of colors to find")
 	t_ptr := flag.Int("t", 1, "Number of threads to use for computation")
