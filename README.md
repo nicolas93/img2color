@@ -39,6 +39,15 @@ go run img2color.go -image testimage.jpeg -k 6 -t 10 -output silhouette
 ```
 ![test image with color-silhouette](https://raw.githubusercontent.com/nicolas93/img2color/master/testimage.jpeg_silhouette_k6.png)
 
+### Color-Silhouette output(k=12):
+In this example every pixel is colored in its nearest main-color.
+
+```
+go run img2color.go -image testimage.jpeg -k 12 -t 10 -output silhouette
+```
+![test image with color-silhouette](https://raw.githubusercontent.com/nicolas93/img2color/master/testimage.jpeg_silhouette_k12.png)
+
+
 ### html-color-code
 ```
 go run img2color.go -image testimage.jpeg -k 6 -t 10 -output html
