@@ -1,32 +1,7 @@
 # img2color
 
-## Dependencies
-* Python
-  * Pillow: ```pip install Pillow```
-
 ## Usage
 
-### Python
-```
-usage: img2color.py [-h] [-k K] [--fast] [-t T]
-                    [--output-format {image-palette,silhouette,html-color-code}]
-                    image
-
-Find main colors in a given image.
-
-positional arguments:
-  image                 Image to be processed
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -k K                  Custom K for KMeans algorithm
-  --fast                Activate fast mode
-  -t T                  Number of threads to use for computation
-  --output-format {image-palette,silhouette,html-color-code}
-                        Output-format
-```
-
-### Go
 ```
 Usage of img2color.go:
   -fast
@@ -71,3 +46,10 @@ In each computation step every point is assigned to the nearest mean point.
 Then of every (k) subset a new mean point is calculated. The mean point does not have to be in the subset.
 
 In this project we use the color of each pixel as a 3 dimensional point, and thus k mean (or dominant) colors are calculated. 
+
+
+## Notes
+
+### Python implementation
+The python implementation (img2color.py) is no longer supported and discontinued.
+It was much slower than the Go implementation.

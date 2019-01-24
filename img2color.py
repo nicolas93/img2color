@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+# Python implementation is discontinued
 
 from PIL import Image
 import sys
@@ -107,6 +108,7 @@ def kmeans(im, k_len, t):
 
 
 def main():
+	print "The python implementation is discontinued. Please use the golang-implementation. It really is faster."
 	parser = argparse.ArgumentParser(description='Find main colors in a given image.')
 	parser.add_argument("image", help="Image to be processed")
 	parser.add_argument("-k",type=int, help="Custom K for KMeans algorithm", default=3)

@@ -18,12 +18,12 @@ import (
 // color_diff_euklid is a function to calculate the distance between to colors.
 // The parameters are a: a RGB-array with 16bit color values and b: a RGB-array with 8bit color values.
 // It returns the euklidian distance between the colors.
-func color_diff_euklid(a [3]int, b[]int) int {
-	return int(math.Sqrt(math.Pow(float64((a[0]>>8)-b[0]), 2)+math.Pow(float64((a[1]>>8)-b[1]), 2)+math.Pow(float64((a[2]>>8)-b[2]), 2)))
+func color_diff_euklid(a [3]int, b []int) int {
+	return int(math.Sqrt(math.Pow(float64((a[0]>>8)-b[0]), 2) + math.Pow(float64((a[1]>>8)-b[1]), 2) + math.Pow(float64((a[2]>>8)-b[2]), 2)))
 }
 
 // assign_k is a function to assign each pixel of the image to one k.
-// Since it is to be run multithreaded, the result is returned via a channel
+// Since it is to be run multithreaded, the result is returned via a channeldoc: symbol img2color is not a type in package main installed in "."
 // The start and stop of the assigned pixels are returned in the last field of the result matrix tmp_mat
 // This is done to achieve deterministic results
 func assign_k(image image.Image, k int, k_med [][]int, start int, stop int, ch chan [][]int) {
@@ -76,7 +76,6 @@ func medium_k(image image.Image, j int, width int, height int, k_mat [][]int, ch
 	ch_m <- k_m
 }
 
-
 // kmeans is the function to calculate k mean colors
 // image is the image to be processed
 // k is the number of mean colors to be calculated
@@ -121,7 +120,6 @@ func kmeans(image image.Image, k int, t int, n int) [][]int {
 	fmt.Println("\nDone.")
 	return k_med
 }
-
 
 // main is used to interpret the parameters,
 // start the algorithm and output the results
