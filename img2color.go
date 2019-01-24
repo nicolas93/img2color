@@ -145,7 +145,6 @@ func main() {
 
 	k_med := kmeans(m, *k_ptr, *t_ptr, *n_ptr)
 
-	fmt.Println(k_med)
 	for i := 0; i < len(k_med); i++ {
 		fmt.Printf("#%02x%02x%02x\n", k_med[i][0], k_med[i][1], k_med[i][2])
 	}

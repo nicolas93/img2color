@@ -25,18 +25,26 @@ This image is used for tests. It was provided by https://www.pexels.com .
 
 ### Color-Palette output(k=5):
 Main  colors are shown in a palette next to the image.
-![test image with color-palette](https://raw.githubusercontent.com/nicolas93/img2color/master/testimage.jpeg_pallette_k5.png)
+```go run img2color.go -image testimage.jpeg -k 6 -t 10 -output palette```
+![test image with color-palette](https://raw.githubusercontent.com/nicolas93/img2color/master/testimage.jpeg_palette_k6.png)
 
-### Color-Silhouette output(k=5):
+### Color-Silhouette output(k=6):
 In this example every pixel is colored in its nearest main-color.
-![test image with color-silhouette](https://raw.githubusercontent.com/nicolas93/img2color/master/testimage.jpeg_silhouette_k5.png)
+```go run img2color.go -image testimage.jpeg -k 6 -t 10 -output silhouette```
+![test image with color-silhouette](https://raw.githubusercontent.com/nicolas93/img2color/master/testimage.jpeg_silhouette_k6.png)
 
 ### html-color-code
 ```
-./img2color.py testimage.jpeg
-#483a2b
-#55cbda
-#e5f8fa
+go run img2color.go -image testimage.jpeg -k 6 -t 10 -output html
+Processing: 100.00%
+Done.
+#ba6223
+#72dae8
+#b9edf3
+#f9fdfd
+#09a4b8
+#252827
+html
 ```
 
 ## Kmeans-Algorithm
