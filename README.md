@@ -25,11 +25,13 @@ This image is used for tests. It was provided by https://www.pexels.com .
 
 ### Color-Palette output(k=5):
 Main  colors are shown in a palette next to the image.
+
 ```go run img2color.go -image testimage.jpeg -k 6 -t 10 -output palette```
 ![test image with color-palette](https://raw.githubusercontent.com/nicolas93/img2color/master/testimage.jpeg_palette_k6.png)
 
 ### Color-Silhouette output(k=6):
 In this example every pixel is colored in its nearest main-color.
+
 ```go run img2color.go -image testimage.jpeg -k 6 -t 10 -output silhouette```
 ![test image with color-silhouette](https://raw.githubusercontent.com/nicolas93/img2color/master/testimage.jpeg_silhouette_k6.png)
 
