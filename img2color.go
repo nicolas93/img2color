@@ -131,7 +131,9 @@ func main() {
 	var image_file string
 	flag.StringVar(&image_file, "image", "", "Image to be processed")
 	var output_ptr string
-	flag.StringVar(&output_ptr, "output", "palette", "Output option")
+	flag.StringVar(&output_ptr, "mode", "palette", "Output option")
+	var output_file_ptr string
+	flag.StringVar(&output_file_ptr, "o", "image.png", "Output file name")
 	flag.Parse()
 
 	reader, err := os.Open(image_file)
@@ -168,7 +170,7 @@ func main() {
 				img.Set(x, y, color.RGBA{uint8(k_med[minimum][0]), uint8(k_med[minimum][1]), uint8(k_med[minimum][2]), 0xff})
 			}
 		}
-		f, _ := os.Create("image_s.png")
+		f, _ := os.Create(output_file_ptr)
 		png.Encode(f, img)
 	}
 
@@ -185,7 +187,7 @@ func main() {
 				img.Set(x, y, color.RGBA{uint8(k_med[(y*k)/m.Bounds().Max.Y][0]), uint8(k_med[(y*k)/m.Bounds().Max.Y][1]), uint8(k_med[(y*k)/m.Bounds().Max.Y][2]), 0xff})
 			}
 		}
-		f, _ := os.Create("image_p.png")
+		f, _ := os.Create(output_file_ptr)
 		png.Encode(f, img)
 	}
 

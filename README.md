@@ -4,16 +4,18 @@
 
 ```
 Usage of img2color.go:
-  -fast
-    	Activate fast mode.
   -image string
-    	Image to be processed
+      Image to be processed
   -k int
-    	Number of colors to find (default 5)
-  -output string
-    	Output option (default "pallette")
+      Number of colors to find (default 5)
+  -mode string
+      Output option (default "palette")
+  -n int
+      Number of rounds for computation (default 10)
+  -o string
+      Output file name (default "image.png")
   -t int
-    	Number of threads to use for computation (default 1)
+      Number of threads to use for computation (default 1)
 ```
 
 ## Examples
