@@ -29,7 +29,7 @@ This image is used for tests. It was provided by https://www.pexels.com .
 Main  colors are shown in a palette next to the image.
 
 ```
-go run img2color.go -image testimage.jpeg -k 6 -t 10 -output palette
+go run img2color.go -image testimage.jpeg -k 6 -t 10 -mode palette
 ```
 ![test image with color-palette](https://raw.githubusercontent.com/nicolas93/img2color/master/testimage.jpeg_palette_k6.png)
 
@@ -37,7 +37,7 @@ go run img2color.go -image testimage.jpeg -k 6 -t 10 -output palette
 In this example every pixel is colored in its nearest main-color.
 
 ```
-go run img2color.go -image testimage.jpeg -k 6 -t 10 -output silhouette
+go run img2color.go -image testimage.jpeg -k 6 -t 10 -mode silhouette
 ```
 ![test image with color-silhouette](https://raw.githubusercontent.com/nicolas93/img2color/master/testimage.jpeg_silhouette_k6.png)
 
@@ -45,14 +45,14 @@ go run img2color.go -image testimage.jpeg -k 6 -t 10 -output silhouette
 In this example every pixel is colored in its nearest main-color.
 
 ```
-go run img2color.go -image testimage.jpeg -k 12 -t 10 -output silhouette
+go run img2color.go -image testimage.jpeg -k 12 -t 10 -mode silhouette
 ```
 ![test image with color-silhouette](https://raw.githubusercontent.com/nicolas93/img2color/master/testimage.jpeg_silhouette_k12.png)
 
 
 ### html-color-code
 ```
-go run img2color.go -image testimage.jpeg -k 6 -t 10 -output html
+go run img2color.go -image testimage.jpeg -k 6 -t 10 -mode html
 Processing: 100.00%
 Done.
 #ba6223
